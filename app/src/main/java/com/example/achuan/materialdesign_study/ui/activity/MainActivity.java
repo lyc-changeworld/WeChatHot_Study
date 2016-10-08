@@ -1,4 +1,4 @@
-package com.example.achuan.materialdesign_study;
+package com.example.achuan.materialdesign_study.ui.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,8 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.example.achuan.materialdesign_study.App.Constants;
-import com.example.achuan.materialdesign_study.adapter.WXIAdapter;
-import com.example.achuan.materialdesign_study.model.WXItemBean;
+import com.example.achuan.materialdesign_study.R;
+import com.example.achuan.materialdesign_study.ui.adapter.WXIAdapter;
+import com.example.achuan.materialdesign_study.model.bean.WXItemBean;
 import com.example.achuan.materialdesign_study.model.http.WechatAsyncTask;
 
 import java.util.List;

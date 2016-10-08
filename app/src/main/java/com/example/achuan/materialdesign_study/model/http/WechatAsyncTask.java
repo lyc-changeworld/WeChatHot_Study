@@ -2,7 +2,7 @@ package com.example.achuan.materialdesign_study.model.http;
 
 import android.os.AsyncTask;
 
-import com.example.achuan.materialdesign_study.model.WXItemBean;
+import com.example.achuan.materialdesign_study.model.bean.WXItemBean;
 
 import java.util.List;
 

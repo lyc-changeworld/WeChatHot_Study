@@ -1,4 +1,4 @@
-package com.example.achuan.materialdesign_study.model;
+package com.example.achuan.materialdesign_study.model.bean;
 
 /**
  * Created by achuan on 16-10-5.

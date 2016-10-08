@@ -7,8 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.example.achuan.materialdesign_study.R;
-import com.example.achuan.materialdesign_study.adapter.WXIAdapter;
 import com.example.achuan.materialdesign_study.model.http.HttpUtil;
+import com.example.achuan.materialdesign_study.ui.adapter.WXIAdapter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -49,7 +49,7 @@ public class ImageLoader {
         //除以1024是为了将单位转换为：KB
         int maxMemory= (int) (Runtime.getRuntime().maxMemory()/1024);
         //设置总容量的大小
-        int cacheSize=maxMemory/8;
+        int cacheSize=maxMemory/4;
         //初始化:创建LruCache来实现内存缓存
         mLruCache=new LruCache<String, Bitmap>(cacheSize){
             //计算缓存对象的大小 单位：KB
@@ -64,31 +64,31 @@ public class ImageLoader {
     /*****图片加载显示的优化处理方法*****/
     //取消掉所有正在执行的任务
     public void cancelAllTasks() {
-        if(mTask!=null)
-        {
+        if(mTask!=null) {
             //变量集合中的所有任务,将它们全部取消掉
             for (NewsAsyncTask task:mTask) {
                 task.cancel(false);
             }
         }
     }
+
+    /****
+     *
+     * 建议该方法中只进行图片的加载和缓存(第一次缓存完后可以显示一次)工作
+     *
+     * ****/
     //根据列表显示界面中的范围来加载这个范围类的图片资源
     public void loadImages(int start, int end) {
+        NewsAsyncTask task;//引用变量
         for (int i = start; i <=end ; i++) {
-            String url= WXIAdapter.URLS[i];
+            String url= WXIAdapter.URLS.get(i);
             //从缓存中取出key值对应的图片
             Bitmap bitmap=getBitmpFromCache(url);
             //如果图片没有缓存,这时才加载网络图片,并将其缓存下来
             if(bitmap==null) {
-                NewsAsyncTask task=new NewsAsyncTask(url);
+                task=new NewsAsyncTask(url);
                 task.execute(url);
                 mTask.add(task);//将task任务存储起来,方便后续管理
-            }
-            else {
-                //缓存中存在图片时直接将其显示出来即可
-                //通过添加的tag来加载控件对象
-                ImageView imageView= (ImageView) mRecyclerView.findViewWithTag(url);
-                imageView.setImageBitmap(bitmap);
             }
         }
     }
@@ -97,13 +97,13 @@ public class ImageLoader {
     {
         //从缓存中取出key值对应的图片
         Bitmap bitmap=getBitmpFromCache(url);
+        //缓存中存在图片时直接将其显示出来即可
         //如果图片没有缓存,这时才加载网络图片,并将其缓存下来
         if(bitmap==null) {
             imageView.setImageResource(R.mipmap.ic_launcher);
         }
         else {
-            //缓存中存在图片时直接将其显示出来即可
-            imageView.setImageBitmap(bitmap);
+            imageView.setImageBitmap(bitmap);//列表中item显示变化时更新图片显示
         }
     }
     //AsyncTask<1,2,3> 3个参数的介绍：1传入给后台任务的数据的类型,2进度值类型,3返回值类型
@@ -136,9 +136,10 @@ public class ImageLoader {
             //如果当前任务被取消了,直接退出任务
             if(isCancelled()) return;
             super.onPostExecute(bitmap);
+            //通过tag获取imagview对象
             ImageView imageView= (ImageView) mRecyclerView.findViewWithTag(mUrl);
             if(imageView!=null&&bitmap!=null) {
-                imageView.setImageBitmap(bitmap);
+                imageView.setImageBitmap(bitmap);//缓存结束的那一次会显示图片
             }
             mTask.remove(this);//任务执行完后将进程从集合中移除
         }

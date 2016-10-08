@@ -1,4 +1,4 @@
-package com.example.achuan.materialdesign_study.adapter;
+package com.example.achuan.materialdesign_study.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,11 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.achuan.materialdesign_study.util.ImageLoader;
 import com.example.achuan.materialdesign_study.R;
-import com.example.achuan.materialdesign_study.model.WXItemBean;
+import com.example.achuan.materialdesign_study.model.bean.WXItemBean;
+import com.example.achuan.materialdesign_study.util.ImageLoader;
 import com.example.achuan.materialdesign_study.widget.SquareImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -30,8 +31,8 @@ public class WXIAdapter extends RecyclerView.Adapter<WXIAdapter.ViewHolder> {
     //定义一个全局变量,保证只创建一个LruCache对象
     private ImageLoader mImageLoader;
     private int mStart,mEnd;//定义item加载的起始和结束的位置序号
-    public static String[] URLS;//存储所有的图片链接地址
-    private boolean mFirstIn;//是否第一次显示的标志
+    public static List<String> URLS=new ArrayList<>();//存储所有的图片链接地址
+    private boolean mFirstIn=true;//为标志变量设置true,标志第一次显示
 
 
     private LayoutInflater mInflater;//创建布局装载对象来获取相关控件（类似于findViewById()）
@@ -58,13 +59,13 @@ public class WXIAdapter extends RecyclerView.Adapter<WXIAdapter.ViewHolder> {
         mInflater = LayoutInflater.from(context);
         mImageLoader=new ImageLoader(recyclerView);
 
-        //存储所有的图片访问链接地址
-        URLS=new String[mList.size()];
-        for (int i = 0; i <mList.size() ; i++) {
-            URLS[i]=mList.get(i).getPicUrl();
+        if(mList.size()>0)
+        {
+            //存储所有的图片访问链接地址
+            for (int i = 0; i <mList.size() ; i++) {
+                URLS.add(mList.get(i).getPicUrl());
+            }
         }
-        //为标志变量设置true,标志第一次显示
-        mFirstIn=true;
 
         //为列表的滑动事件注册监听
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -75,7 +76,6 @@ public class WXIAdapter extends RecyclerView.Adapter<WXIAdapter.ViewHolder> {
                 {
                     //将指定范围中的图片加载显示出来
                     mImageLoader.loadImages(mStart,mEnd);
-                    //Log.d("lyc",mStart+"and"+mEnd);
                 }
                 else {//其他状态停止加载数据
                     mImageLoader.cancelAllTasks();
@@ -105,13 +105,26 @@ public class WXIAdapter extends RecyclerView.Adapter<WXIAdapter.ViewHolder> {
     public int getItemCount() {
         return mList.size();
     }
+
+
+
+    /****
+     *
+     * item第一次显示时,才创建其对应的viewholder进行控件存储,之后直接使用即可
+     *
+     * ****/
     //先创建ViewHolder
     public ViewHolder onCreateViewHolder(ViewGroup parent, int type) {
         View view = mInflater.inflate(R.layout.item_wechat, parent, false);//载入item布局
         ViewHolder viewHolder = new ViewHolder(view);//创建一个item的viewHoler实例
         return viewHolder;
     }
-    //后绑定ViewHolder
+    /****当前界面中出现了item的显示更新时执行该方法（即有item加入或者移除界面）
+     *
+     * 该方法的执行顺序　　早于　　onScrolled（）方法
+     *
+     * ****/
+    //绑定ViewHolder
     public void onBindViewHolder(final ViewHolder holder, final int postion) {
         //再通过viewHolder中缓冲的控件添加相关数据
         WXItemBean bean=mList.get(postion);//从数据源集合中获得对象

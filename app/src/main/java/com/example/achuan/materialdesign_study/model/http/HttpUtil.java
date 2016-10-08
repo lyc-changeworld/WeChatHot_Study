@@ -3,7 +3,7 @@ package com.example.achuan.materialdesign_study.model.http;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.example.achuan.materialdesign_study.model.WXItemBean;
+import com.example.achuan.materialdesign_study.model.bean.WXItemBean;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
