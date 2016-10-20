@@ -1,4 +1,4 @@
-package com.example.achuan.materialdesign_study.App;
+package com.example.achuan.materialdesign_study.app;
 
 /**
  * Created by achuan on 16-10-5.

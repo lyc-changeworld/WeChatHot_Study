@@ -57,8 +57,7 @@ public class WXIAdapter extends RecyclerView.Adapter<WXIAdapter.ViewHolder> {
         this.mList = mList;
         //通过获取context来初始化mInflater对象
         mInflater = LayoutInflater.from(context);
-        mImageLoader=new ImageLoader(recyclerView);
-
+        mImageLoader=ImageLoader.build(context,recyclerView);
         if(mList.size()>0)
         {
             //存储所有的图片访问链接地址
@@ -85,7 +84,7 @@ public class WXIAdapter extends RecyclerView.Adapter<WXIAdapter.ViewHolder> {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 // dy :正  列表向上划动
-                // dy :负  列表向下划动 上下滑动时dx为正
+                // dy :负  列表向下划动 上下滑动时dx一直为正（水平方向）
                 //当前列表界面最上面的item的序号（小号） 序号从0开始
                 mStart=((LinearLayoutManager) recyclerView
                         .getLayoutManager()).findFirstVisibleItemPosition();
